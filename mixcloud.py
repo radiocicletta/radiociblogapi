@@ -19,7 +19,7 @@ def harvest(path, idxname):
         result = urllib2.urlopen("%s/%s/playlists/" % (base_url, username))
         playlists = json.loads(result.read())
     except:
-        playlists =  { data:[] }
+        playlists =  { "data":[] }
 
 
     for plist in playlists["data"]:
@@ -32,6 +32,12 @@ def harvest(path, idxname):
             pass
         finally:
             js.close()
+
+    try:
+        recents = urllib2.urlopen("%s/%s/cloudcasts/" % (base_url, username))
+        jsonidxobj["recents"] = json.loads(recents.read())
+    except:
+        jsonidxobj["recents"] = { "data":[] }
 
     jsonidx.write(json.dumps(jsonidxobj))
     jsonidx.close()
