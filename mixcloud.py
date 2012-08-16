@@ -4,10 +4,12 @@ import urllib2
 import json
 import sys, os
 
-def harvest(path, idxname):
+def harvest(path, idxname, **kwargs):
 
     base_url = "http://api.mixcloud.com"
-    username = "radiocicletta"
+    username = kwargs.get('username', '')
+    if not username:
+        return
 
     jsonidx = open("%s/%s.json" % (path, idxname), 'w')
     jsonidxobj = { "name": idxname, "playlists":{} }
@@ -48,4 +50,4 @@ if __name__ == "__main__":
 
     path = sys.argv[1]
     idx = sys.argv[2]
-    harvest(path, idx)
+    harvest(path, idx, username='radiocicletta')
