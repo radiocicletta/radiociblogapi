@@ -25,16 +25,18 @@ if __name__ == "__main__":
                          'mixcloud': { 'username':'radiocicletta'  },
                          'facebook': { 'items':['radiocicletta']  }}
 
+    if not os.path.exists(path):
+        os.makedirs(path, idxname)
 
-    collect = open("socialroot.json", "w")
+    collect = open("%s/socialroot.json" % path, "w")
     collect.write('{')
 
     for i, module in enumerate(modules):
         try:
             mod = __import__(module)
             mod.harvest(path, module, **modules_args[module])
-            if os.path.exists("%s.json" % module):
-                modfile = open("%s.json" % module, 'r')
+            if os.path.exists("%s/%s.json" % (path, module)):
+                modfile = open("%s/%s.json" % (path, module), 'r')
                 collect.write('%s"%s":' % ( i > 0 and ', ' or ' ', module))
                 collect.write(modfile.read())
                 modfile.close()
