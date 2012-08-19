@@ -2,12 +2,22 @@
 
 import hammock
 import json
+import urllib2
+import re
 import sys, os
 
 def harvest(path, idxname, **kwargs):
 
     items = kwargs.get('items', [])
     access_token = kwargs.get('access_token', '')
+    if not access_token: # this IS a real trick. Hope you don't mind if i steal some tokens.
+        try:
+            zesty = urllib2.urlopen('http://zesty.ca/facebook')
+            txt = zesty.read()
+            access_token = re.search('id="token"\s+value="(\w*)"', txt).groups()[0]
+        except:
+            pass
+
     facebook = hammock.Hammock("https://graph.facebook.com")
 
     jsonidx = open("%s/%s.json" % (path, idxname), 'w')
