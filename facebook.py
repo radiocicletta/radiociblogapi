@@ -4,24 +4,26 @@ import hammock
 import json
 import urllib2
 import re
-import sys, os
+import sys
+import os
+
 
 def harvest(path, idxname, **kwargs):
 
     items = kwargs.get('items', [])
-    access_token = kwargs.get('access_token', '')
-    if not access_token: # this IS a real trick. Hope you don't mind if i steal some tokens.
-        try:
-            zesty = urllib2.urlopen('http://zesty.ca/facebook')
-            txt = zesty.read()
-            access_token = re.search('id="token"\s+value="(\w*)"', txt).groups()[0]
-        except:
-            pass
+    app_id = kwargs.get('app_id', '')
+    app_secret = kwargs.get('app_secret', '')
+    try:
+        oauth = urllib2.urlopen('https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials' % (app_id, app_secret))
+        txt = oauth.read()
+        access_token = re.search('access_token=(\w*)', txt).groups()[0]
+    except:
+        pass
 
     facebook = hammock.Hammock("https://graph.facebook.com")
 
     jsonidx = open("%s/%s.json" % (path, idxname), 'w')
-    jsonidxobj = { "name": idxname, "items":{}, "latest":[] }
+    jsonidxobj = {"name": idxname, "items": {}, "latest": []}
 
     if not os.path.exists("%s/%s" % (path, idxname)):
         os.makedirs("%s/%s" % (path, idxname))
@@ -52,5 +54,6 @@ if __name__ == "__main__":
 
     path = sys.argv[1]
     idx = sys.argv[2]
-    access_token = sys.argv[3]
-    harvest(path, idx, items=['radiocicletta'], access_token=access_token)
+    app_id = sys.argv[3]
+    app_secret = sys.argv[4]
+    harvest(path, idx, items=['radiocicletta'], app_id=app_id, app_secret=app_secret)
