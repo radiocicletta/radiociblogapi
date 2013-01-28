@@ -16,7 +16,7 @@ def harvest(path, idxname, **kwargs):
     try:
         oauth = urllib2.urlopen('https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials' % (app_id, app_secret))
         txt = oauth.read()
-        access_token = re.search('access_token=(\w*)', txt).groups()[0]
+        access_token = re.search('access_token=(.*)', txt).groups()[0]
     except:
         pass
 
