@@ -20,7 +20,7 @@ def harvest(path, idxname, **kwargs):
         os.makedirs("%s/%s" % (path, idxname))
 
     try:
-        result = urllib2.urlopen("%s/%s/playlists/" % (base_url, username))
+        result = urllib2.urlopen("%s/%s/playlists/?limit=1000&offset=0" % (base_url, username))
         playlists = json.loads(result.read())
     except:
         playlists = {"data": []}
