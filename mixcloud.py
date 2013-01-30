@@ -2,7 +2,9 @@
 
 import urllib2
 import json
-import sys, os
+import sys
+import os
+
 
 def harvest(path, idxname, **kwargs):
 
@@ -12,7 +14,7 @@ def harvest(path, idxname, **kwargs):
         return
 
     jsonidx = open("%s/%s.json" % (path, idxname), 'w')
-    jsonidxobj = { "name": idxname, "playlists":{} }
+    jsonidxobj = {"name": idxname, "playlists": {}}
 
     if not os.path.exists("%s/%s" % (path, idxname)):
         os.makedirs("%s/%s" % (path, idxname))
@@ -21,13 +23,12 @@ def harvest(path, idxname, **kwargs):
         result = urllib2.urlopen("%s/%s/playlists/" % (base_url, username))
         playlists = json.loads(result.read())
     except:
-        playlists =  { "data":[] }
-
+        playlists = {"data": []}
 
     for plist in playlists["data"]:
         js = open("%s/%s/%s.json" % (path, idxname, plist['slug']), 'w')
         try:
-            result = urllib2.urlopen("%s/%s/playlists/%s/cloudcasts/" % (base_url, username, plist['slug']))
+            result = urllib2.urlopen("%s/%s/playlists/%s/cloudcasts/?limit=1000&offset=0" % (base_url, username, plist['slug']))
             js.write(result.read())
             jsonidxobj["playlists"][plist["slug"]] = "%s/%s.json" % (idxname, plist['slug'])
         except:
@@ -39,7 +40,7 @@ def harvest(path, idxname, **kwargs):
         recents = urllib2.urlopen("%s/%s/cloudcasts/" % (base_url, username))
         jsonidxobj["recents"] = json.loads(recents.read())
     except:
-        jsonidxobj["recents"] = { "data":[] }
+        jsonidxobj["recents"] = {"data": []}
 
     jsonidx.write(json.dumps(jsonidxobj))
     jsonidx.close()
