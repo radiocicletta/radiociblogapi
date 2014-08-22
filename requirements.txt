@@ -1,0 +1,4 @@
+hammock
+requests
+Pillow
+-e git+https://github.com/leofiore/tilify#egg=tilify
